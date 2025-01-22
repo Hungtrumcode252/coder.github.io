@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng sáng của thực vật🌿</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #initialOptionsTitle {
+            font-size: 30px;
+            font-weight: bold;
+            color: #97FFFF;
+            margin-top: 50px;
+            display: block;
+        }
+
+        #videoOptionsTitle {
+            font-size: 30px;
+            font-weight: bold;
+            color: #98fb98;
+            margin-top: 40px;
+            display: none;
+        }
+
+        .options-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 50px;
+            width: 60%;
+            margin: 0 auto;
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #yesOption {
+            padding: 20px;
+            border: 2px solid white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.2);
+            width: 200px;
+            text-align: center;
+        }
+
+        #noOption {
+            padding: 20px;
+            border: 2px solid white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.2);
+            width: 200px;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            right: 10%;
+            transform: translateY(-50%);
+        }
+
+        label:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .video-options {
+            display: inline-block;
+            padding: 20px;
+            border: 2px solid white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 10px;
+        }
+
+        .video-options:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        video {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 100;
+        }
+
+        #thanksMessage {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+            font-size: 72px;
+            font-weight: bold;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            animation: fadeIn 3s forwards, colorChange 3s infinite alternate, bounce 1s infinite;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes colorChange {
+            0% { color: white; }
+            50% { color: yellow; }
+            100% { color: cyan; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <div id="initialOptionsTitle">
+       Các bạn có muốn xem bài thuyết trình của nhóm chúng tớ không?🤔
+    </div>
+
+    <div id="initialOptions" style="display: none;">
+        <div class="options-container">
+            <label id="yesOption" onclick="startPresentation()">Có</label>
+            <label id="noOption" onmouseover="moveNoOption()">Không</label>
+        </div>
+    </div>
+
+    <video id="initialVideo" controls autoplay>
+        <source src="initialVideo.mp4" type="video/mp4">
+        Trình duyệt của bạn không hỗ trợ video.
+    </video>
+
+    <div id="videoOptionsTitle" style="display:none;">
+        🌿Đây là những video thí nghiệm về hướng sáng của thực vật🌿
+    </div>
+
+    <label id="label1" class="video-options" onclick="playVideo(1)" style="display: none;">
+        Đặt cây ở ngoài trời🌞
+    </label>
+
+    <label id="label2" class="video-options" onclick="playVideo(2)" style="display: none;">
+     Đặt cây trong bìa giấy có khoét lỗ😊
+    </label>
+
+    <video id="video1" controls>
+        <source src="video1.mp4" type="video/mp4">
+        Trình duyệt của bạn không hỗ trợ video.
+    </video>
+
+    <video id="video2" controls>
+        <source src="video2.mp4" type="video/mp4">
+        Trình duyệt của bạn không hỗ trợ video.
+    </video>
+
+    <video id="video3" controls>
+        <source src="video3.mp4" type="video/mp4">
+        Trình duyệt của bạn không hỗ trợ video.
+    </video>
+
+    <div id="thanksMessage">❤️Thanks for watching❤️</div>
+
+    <script>
+        let completedVideos = new Set(); // Bộ nhớ để lưu trữ các video đã xem
+        let videoEndCount = 0; // Biến đếm số video đã kết thúc
+
+        function showInitialOptions() {
+            document.getElementById('initialOptions').style.display = 'block';
+            document.getElementById('initialOptionsTitle').style.display = 'block';
+        }
+
+        function startPresentation() {
+            document.getElementById('initialOptions').style.display = 'none';  // Ẩn các lựa chọn "Có" và "Không"
+            document.getElementById('initialOptionsTitle').style.display = 'none';  // Ẩn tiêu đề "Bạn có muốn xem bài thuyết trình của nhóm chúng tớ không?" 
+
+            const initialVideo = document.getElementById('initialVideo');
+            initialVideo.style.display = 'block';
+            initialVideo.play(); // Video sẽ phát với âm thanh bật
+
+            initialVideo.onended = () => {
+                initialVideo.style.display = 'none';
+                document.getElementById('videoOptionsTitle').style.display = 'block';
+                document.querySelectorAll('.video-options').forEach(label => label.style.display = 'block'); // Hiển thị các lựa chọn video
+            };
+        }
+
+        function playVideo(optionId) {
+            document.querySelectorAll('video').forEach(video => {
+                video.pause();
+                video.currentTime = 0;
+                video.style.display = 'none';
+            });
+
+            const videoElement = document.getElementById('video' + optionId);
+            videoElement.style.display = 'block';
+            videoElement.play();
+
+            document.getElementById('label' + optionId).style.display = 'none';
+
+            videoElement.onended = () => {
+                videoElement.style.display = 'none';
+                completedVideos.add(optionId); // Đánh dấu video đã kết thúc
+
+                videoEndCount++; // Tăng số lượng video đã kết thúc
+                if (videoEndCount === 2) { // Sau khi cả hai video 1 và video 2 đã kết thúc
+                    setTimeout(() => {
+                        playNextVideo(); // Phát video tiếp theo
+                    }, 1000); // Thời gian chờ 1 giây
+                }
+            };
+        }
+
+        function playNextVideo() {
+            const nextVideoElement = document.getElementById('video3'); // Giả sử video mới là video3
+            nextVideoElement.style.display = 'block';
+            nextVideoElement.play();
+
+            nextVideoElement.onended = () => {
+                nextVideoElement.style.display = 'none';
+                setTimeout(() => {
+                    const thanksMessage = document.getElementById('thanksMessage');
+                    thanksMessage.style.display = 'flex'; // Hiển thị thông điệp cảm ơn
+                }, 1000); // Thời gian chờ 1 giây để chắc chắn video đã dừng
+            };
+        }
+
+        function moveNoOption() {
+            const noOption = document.getElementById('noOption');
+            const maxWidth = window.innerWidth - noOption.offsetWidth;  // Giới hạn chiều rộng
+            const maxHeight = window.innerHeight * 0.5 - noOption.offsetHeight; // Giới hạn chiều cao
+
+            const randomX = Math.random() * maxWidth;  // Vị trí ngẫu nhiên theo chiều rộng
+            const randomY = Math.random() * maxHeight; // Vị trí ngẫu nhiên theo chiều cao
+
+            noOption.style.left = randomX + 'px';
+            noOption.style.top = randomY + 'px';
+        }
+
+        window.onload = showInitialOptions;
+    </script>
+</body>
+</html>
